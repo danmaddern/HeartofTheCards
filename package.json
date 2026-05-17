@@ -1,0 +1,20 @@
+{
+  "name": "heart-of-the-cards",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Heart of the Cards - Premium TCG ecommerce store",
+  "scripts": {
+    "dev:api": "cd CardAppBE && pnpm dev",
+    "dev:web": "cd CardAppFE && pnpm dev",
+    "db:migrate": "cd CardAppBE && pnpm db:migrate",
+    "db:migrate:dev": "cd CardAppBE && pnpm db:migrate:dev",
+    "db:seed": "cd CardAppBE && pnpm db:seed",
+    "db:studio": "cd CardAppBE && pnpm db:studio",
+    "db:reset": "cd CardAppBE && pnpm db:reset",
+    "gen:api": "cd CardAppFE && pnpm gen:api"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "pnpm": ">=8.0.0"
+  }
+}

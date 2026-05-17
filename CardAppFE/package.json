@@ -1,0 +1,42 @@
+{
+  "name": "web",
+  "version": "1.0.0",
+  "description": "Heart of the Cards - React Frontend",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview",
+    "lint": "eslint src --ext .ts,.tsx",
+    "gen:api": "openapi-typescript http://localhost:3000/api/docs-json -o src/api/schema.d.ts"
+  },
+  "dependencies": {
+    "@hookform/resolvers": "^3.3.4",
+    "@paypal/react-paypal-js": "^8.2.0",
+    "@tanstack/react-query": "^5.24.0",
+    "axios": "^1.6.8",
+    "framer-motion": "^11.0.8",
+    "lucide-react": "^0.344.0",
+    "openapi-fetch": "^0.9.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-hook-form": "^7.51.0",
+    "react-hot-toast": "^2.4.1",
+    "react-router-dom": "^6.22.3",
+    "zod": "^3.22.4",
+    "zustand": "^4.5.2"
+  },
+  "devDependencies": {
+    "@tailwindcss/forms": "^0.5.7",
+    "@types/node": "^20.11.28",
+    "@types/react": "^18.2.66",
+    "@types/react-dom": "^18.2.22",
+    "@vitejs/plugin-react": "^4.2.1",
+    "autoprefixer": "^10.4.18",
+    "openapi-typescript": "^6.7.0",
+    "postcss": "^8.4.35",
+    "tailwindcss": "^3.4.1",
+    "typescript": "^5.3.3",
+    "vite": "^5.1.5"
+  }
+}

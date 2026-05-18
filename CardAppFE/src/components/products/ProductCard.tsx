@@ -63,7 +63,7 @@ export const ProductCard = ({ product }: ProductCardProps) => {
     >
       <Link to={`/products/${product.slug}`} className="block">
         {/* Image */}
-        <div className="relative aspect-[3/4] bg-dark-900 overflow-hidden">
+        <div className="relative aspect-[3/4] bg-slate-100 overflow-hidden">
           <img
             src={product.imageUrls[0] || '/placeholder-card.jpg'}
             alt={product.name}
@@ -85,8 +85,8 @@ export const ProductCard = ({ product }: ProductCardProps) => {
           </div>
 
           {isOutOfStock && (
-            <div className="absolute inset-0 bg-dark-950/70 flex items-center justify-center">
-              <span className="text-dark-300 font-medium text-sm">Out of Stock</span>
+            <div className="absolute inset-0 bg-white/80 flex items-center justify-center">
+              <span className="text-slate-500 font-medium text-sm">Out of Stock</span>
             </div>
           )}
 
@@ -113,10 +113,10 @@ export const ProductCard = ({ product }: ProductCardProps) => {
             }`}>
               {brandLabel}
             </span>
-            <span className="text-xs text-dark-500">{typeLabel}</span>
+            <span className="text-xs text-slate-400">{typeLabel}</span>
           </div>
 
-          <h3 className="text-white text-sm font-medium leading-tight line-clamp-2 mb-2 group-hover:text-gold-400 transition-colors">
+          <h3 className="text-dark-900 text-sm font-medium leading-tight line-clamp-2 mb-2 group-hover:text-gold-600 transition-colors">
             {product.name}
           </h3>
 
@@ -132,7 +132,7 @@ export const ProductCard = ({ product }: ProductCardProps) => {
               A${Number(product.price).toFixed(2)}
             </span>
             {product.compareAtPrice && (
-              <span className="text-dark-500 text-xs line-through">
+              <span className="text-slate-400 text-xs line-through">
                 A${Number(product.compareAtPrice).toFixed(2)}
               </span>
             )}

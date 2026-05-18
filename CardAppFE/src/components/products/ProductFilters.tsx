@@ -6,8 +6,6 @@ interface ProductFiltersProps {
   onFilterChange: (filters: Filters) => void;
 }
 
-const AU_STATES = ['ACT', 'NSW', 'NT', 'QLD', 'SA', 'TAS', 'VIC', 'WA'];
-
 export const ProductFiltersPanel = ({ filters, onFilterChange }: ProductFiltersProps) => {
   const update = (key: keyof Filters, value: any) => {
     onFilterChange({ ...filters, [key]: value || undefined, page: 1 });
@@ -20,14 +18,14 @@ export const ProductFiltersPanel = ({ filters, onFilterChange }: ProductFiltersP
   const hasFilters = !!(filters.brand || filters.productType || filters.minPrice || filters.maxPrice || filters.categoryId);
 
   return (
-    <div className="bg-dark-800 rounded-xl border border-dark-700 p-4 space-y-5">
+    <div className="bg-white rounded-xl border border-slate-200 p-4 space-y-5 shadow-sm">
       <div className="flex items-center justify-between">
-        <div className="flex items-center gap-2 text-white font-semibold">
-          <SlidersHorizontal size={16} className="text-gold-400" />
+        <div className="flex items-center gap-2 text-dark-900 font-semibold">
+          <SlidersHorizontal size={16} className="text-gold-500" />
           Filters
         </div>
         {hasFilters && (
-          <button onClick={clearAll} className="text-xs text-dark-400 hover:text-gold-400 flex items-center gap-1 transition-colors">
+          <button onClick={clearAll} className="text-xs text-slate-400 hover:text-gold-500 flex items-center gap-1 transition-colors">
             <X size={12} /> Clear all
           </button>
         )}
@@ -50,7 +48,7 @@ export const ProductFiltersPanel = ({ filters, onFilterChange }: ProductFiltersP
                 onChange={() => update('brand', value)}
                 className="accent-gold-500"
               />
-              <span className="text-sm text-dark-300 group-hover:text-white transition-colors">{label}</span>
+              <span className="text-sm text-slate-600 group-hover:text-dark-900 transition-colors">{label}</span>
             </label>
           ))}
         </div>
@@ -74,7 +72,7 @@ export const ProductFiltersPanel = ({ filters, onFilterChange }: ProductFiltersP
                 onChange={() => update('productType', value as any)}
                 className="accent-gold-500"
               />
-              <span className="text-sm text-dark-300 group-hover:text-white transition-colors">{label}</span>
+              <span className="text-sm text-slate-600 group-hover:text-dark-900 transition-colors">{label}</span>
             </label>
           ))}
         </div>
@@ -92,7 +90,7 @@ export const ProductFiltersPanel = ({ filters, onFilterChange }: ProductFiltersP
             className="input-field text-sm py-2 w-full"
             min={0}
           />
-          <span className="text-dark-500 text-sm">—</span>
+          <span className="text-slate-400 text-sm">—</span>
           <input
             type="number"
             placeholder="Max"
@@ -113,7 +111,7 @@ export const ProductFiltersPanel = ({ filters, onFilterChange }: ProductFiltersP
             onChange={(e) => update('featured', e.target.checked ? true : undefined)}
             className="accent-gold-500 w-4 h-4"
           />
-          <span className="text-sm text-dark-300 group-hover:text-white transition-colors">Featured Items Only</span>
+          <span className="text-sm text-slate-600 group-hover:text-dark-900 transition-colors">Featured Items Only</span>
         </label>
       </div>
     </div>

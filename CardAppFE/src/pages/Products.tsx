@@ -50,7 +50,7 @@ export const Products = () => {
         <div>
           <h1 className="section-title">{pageTitle()}</h1>
           {data && (
-            <p className="text-dark-400 text-sm mt-1">
+            <p className="text-slate-500 text-sm mt-1">
               {data.total} product{data.total !== 1 ? 's' : ''} found
             </p>
           )}
@@ -89,10 +89,10 @@ export const Products = () => {
         {/* Mobile Filters Drawer */}
         {showFilters && (
           <div className="lg:hidden fixed inset-0 z-50 bg-black/60" onClick={() => setShowFilters(false)}>
-            <div className="absolute right-0 top-0 bottom-0 w-72 bg-dark-900 border-l border-dark-700 p-4 overflow-y-auto" onClick={(e) => e.stopPropagation()}>
+            <div className="absolute right-0 top-0 bottom-0 w-72 bg-white border-l border-slate-200 p-4 overflow-y-auto" onClick={(e) => e.stopPropagation()}>
               <div className="flex justify-between items-center mb-4">
-                <h3 className="text-white font-semibold">Filters</h3>
-                <button onClick={() => setShowFilters(false)}><X size={20} className="text-dark-400" /></button>
+                <h3 className="text-dark-900 font-semibold">Filters</h3>
+                <button onClick={() => setShowFilters(false)}><X size={20} className="text-slate-400" /></button>
               </div>
               <ProductFiltersPanel filters={filters} onFilterChange={(f) => { setFilters(f); setShowFilters(false); }} />
             </div>
@@ -123,7 +123,7 @@ export const Products = () => {
                     className={`w-10 h-10 rounded-lg text-sm font-medium transition-colors ${
                       p === filters.page
                         ? 'bg-gold-500 text-dark-950'
-                        : 'bg-dark-800 text-dark-300 hover:text-white hover:bg-dark-700'
+                        : 'bg-slate-100 text-slate-600 hover:text-dark-900 hover:bg-slate-200'
                     }`}
                   >
                     {p}

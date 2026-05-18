@@ -29,7 +29,7 @@ async function main() {
     },
   });
 
-  const accessoriesCategory = await prisma.category.upsert({
+  await prisma.category.upsert({
     where: { slug: 'accessories' },
     update: {},
     create: {
@@ -40,9 +40,9 @@ async function main() {
     },
   });
 
-  // Create admin user
+  // Admin accounts
   const adminPasswordHash = await bcrypt.hash('Admin123!', 10);
-  const admin = await prisma.user.upsert({
+  await prisma.user.upsert({
     where: { email: 'admin@heartofthecards.com.au' },
     update: {},
     create: {
@@ -53,11 +53,9 @@ async function main() {
       role: Role.ADMIN,
     },
   });
-  console.log('👤 Admin user:', admin.email);
 
-  // Create demo customer
   const customerPasswordHash = await bcrypt.hash('Customer123!', 10);
-  const customer = await prisma.user.upsert({
+  await prisma.user.upsert({
     where: { email: 'demo@heartofthecards.com.au' },
     update: {},
     create: {
@@ -69,9 +67,7 @@ async function main() {
       phone: '0412 345 678',
     },
   });
-  console.log('👤 Demo customer:', customer.email);
 
-  // Dev bypass admin (quick access, no real password needed in production)
   const devPasswordHash = await bcrypt.hash('dev', 10);
   await prisma.user.upsert({
     where: { email: 'dev@heartofthecards.dev' },
@@ -84,9 +80,7 @@ async function main() {
       role: Role.ADMIN,
     },
   });
-  console.log('👤 Dev bypass: dev@heartofthecards.dev / dev');
 
-  // Admin accounts — link automatically when signing in with Google
   const ownerPasswordHash = await bcrypt.hash(process.env.OWNER_PASSWORD || 'ChangeMe123!', 10);
   await prisma.user.upsert({
     where: { email: 'dan.maddern@gmail.com' },
@@ -99,7 +93,6 @@ async function main() {
       role: Role.ADMIN,
     },
   });
-  console.log('👤 Admin: dan.maddern@gmail.com');
 
   await prisma.user.upsert({
     where: { email: 'cochranemitchell.2000@gmail.com' },
@@ -112,95 +105,205 @@ async function main() {
       role: Role.ADMIN,
     },
   });
-  console.log('👤 Admin: cochranemitchell.2000@gmail.com');
 
-  // Pokémon booster boxes
+  // Pokémon booster boxes (10 sets, all with locally hosted images)
   const pokemonProducts = [
     {
       name: 'Pokémon Scarlet & Violet - Prismatic Evolutions Booster Box',
       slug: 'pokemon-sv-prismatic-evolutions-booster-box',
-      description:
-        'The Pokémon TCG: Scarlet & Violet—Prismatic Evolutions expansion features dazzling Pokémon in an array of special illustrations. Each booster box contains 36 packs of 10 cards each, giving you the best chance at pulling rare Eevee evolutions and powerful ex Pokémon. A must-have for collectors and competitive players alike.',
+      description: 'The Pokémon TCG: Scarlet & Violet—Prismatic Evolutions expansion features dazzling Eevee evolutions in stunning prismatic illustrations. Each booster box contains 36 packs of 10 cards each. A must-have for collectors and competitive players alike.',
       brand: Brand.POKEMON,
       productType: ProductType.BOOSTER_BOX,
       price: '249.95',
       compareAtPrice: '279.95',
       stockQuantity: 15,
-      imageUrls: [
-        'https://d1i787aglh9bmb.cloudfront.net/assets/img/sv-expansions/sv8dot5/collections/en-us/sv8pt5-booster-bundle-en.png',
-      ],
+      imageUrls: ['/products/pkm-prismatic-evolutions.png'],
       isFeatured: true,
-      sku: 'PKM-SV-PE-BB-001',
+      sku: 'PKM-SV8PT5-BB-001',
       categoryId: pokemonCategory.id,
     },
     {
       name: 'Pokémon Scarlet & Violet - Stellar Crown Booster Box',
       slug: 'pokemon-sv-stellar-crown-booster-box',
-      description:
-        'Pokémon TCG: Scarlet & Violet—Stellar Crown introduces new Stellar Tera-type Pokémon and exciting special art cards. Each booster box contains 36 booster packs. Hunt for rare Stellar Crown Special Illustration Rares and Crown-type Pokémon ex cards.',
+      description: 'Pokémon TCG: Scarlet & Violet—Stellar Crown introduces new Stellar Tera-type Pokémon and exciting special art cards. Each booster box contains 36 booster packs. Hunt for rare Crown-type Pokémon ex cards.',
       brand: Brand.POKEMON,
       productType: ProductType.BOOSTER_BOX,
       price: '219.95',
       compareAtPrice: null,
       stockQuantity: 20,
-      imageUrls: [
-        'https://d1i787aglh9bmb.cloudfront.net/assets/img/sv-expansions/sv07/collections/en-us/sv07-booster-display-en.png',
-      ],
+      imageUrls: ['/products/pkm-stellar-crown.png'],
       isFeatured: true,
-      sku: 'PKM-SV-SC-BB-001',
+      sku: 'PKM-SV7-BB-001',
+      categoryId: pokemonCategory.id,
+    },
+    {
+      name: 'Pokémon Scarlet & Violet - Surging Sparks Booster Box',
+      slug: 'pokemon-sv-surging-sparks-booster-box',
+      description: 'Pokémon TCG: Scarlet & Violet—Surging Sparks crackles with electric energy featuring Pikachu ex and powerful new Pokémon. Each booster box contains 36 packs. Don\'t miss the stunning Special Illustration Rares.',
+      brand: Brand.POKEMON,
+      productType: ProductType.BOOSTER_BOX,
+      price: '229.95',
+      compareAtPrice: '249.95',
+      stockQuantity: 10,
+      imageUrls: ['/products/pkm-surging-sparks.png'],
+      isFeatured: true,
+      sku: 'PKM-SV8-BB-001',
       categoryId: pokemonCategory.id,
     },
     {
       name: 'Pokémon Scarlet & Violet - Twilight Masquerade Booster Box',
       slug: 'pokemon-sv-twilight-masquerade-booster-box',
-      description:
-        'Enter the world of Pokémon TCG: Scarlet & Violet—Twilight Masquerade. Featuring Ancient and Future Pokémon, as well as exciting new Pokémon ex. Each booster box contains 36 packs of 10 cards. Perfect for those chasing the elusive Teal Mask Ogerpon or Cornerstone Mask Ogerpon ex.',
+      description: 'Enter the world of Pokémon TCG: Scarlet & Violet—Twilight Masquerade. Featuring Ancient and Future Pokémon and exciting new Pokémon ex. Each booster box contains 36 packs of 10 cards.',
       brand: Brand.POKEMON,
       productType: ProductType.BOOSTER_BOX,
       price: '199.95',
       compareAtPrice: '229.95',
       stockQuantity: 8,
-      imageUrls: [
-        'https://d1i787aglh9bmb.cloudfront.net/assets/img/sv-expansions/sv06/collections/en-us/p9505-sv06-3d-booster-display-36ct-right-en.png',
-      ],
+      imageUrls: ['/products/pkm-twilight-masquerade.png'],
       isFeatured: false,
-      sku: 'PKM-SV-TM-BB-001',
+      sku: 'PKM-SV6-BB-001',
       categoryId: pokemonCategory.id,
     },
     {
-      name: 'Pokémon Sword & Shield - Crown Zenith Elite Trainer Box',
-      slug: 'pokemon-swsh-crown-zenith-etb',
-      description:
-        "The Pokémon TCG: Crown Zenith Elite Trainer Box contains 10 booster packs from the Crown Zenith set, 65 card sleeves featuring Regieleki & Regidrago VSTAR, 45 Pokémon TCG Energy cards, and more. The perfect collector's item featuring the Hisui region's most iconic Pokémon.",
+      name: 'Pokémon Scarlet & Violet - Temporal Forces Booster Box',
+      slug: 'pokemon-sv-temporal-forces-booster-box',
+      description: 'Pokémon TCG: Scarlet & Violet—Temporal Forces features Ancient and Future Pokémon with brand-new ACE SPEC cards. Each booster box contains 36 packs. Hunt for the powerful Walking Wake ex and Iron Leaves ex.',
       brand: Brand.POKEMON,
       productType: ProductType.BOOSTER_BOX,
-      price: '89.95',
-      compareAtPrice: '99.95',
-      stockQuantity: 25,
-      imageUrls: [
-        'https://static-assets.pokemon.com/content-assets/cms2/img/trading-card-game/series/incrementals/swsh125-elite-trainer-box/swsh125-elite-trainer-box-169-en.png',
-      ],
+      price: '189.95',
+      compareAtPrice: '209.95',
+      stockQuantity: 12,
+      imageUrls: ['/products/pkm-temporal-forces.png'],
       isFeatured: false,
-      sku: 'PKM-SWSH-CZ-ETB-001',
+      sku: 'PKM-SV5-BB-001',
+      categoryId: pokemonCategory.id,
+    },
+    {
+      name: 'Pokémon Scarlet & Violet - Paradox Rift Booster Box',
+      slug: 'pokemon-sv-paradox-rift-booster-box',
+      description: 'Pokémon TCG: Scarlet & Violet—Paradox Rift features Ancient and Future Pokémon unleashed from time. Each booster box contains 36 packs. Chase the ancient Roaring Moon ex and future Iron Valiant ex Special Illustration Rares.',
+      brand: Brand.POKEMON,
+      productType: ProductType.BOOSTER_BOX,
+      price: '179.95',
+      compareAtPrice: '199.95',
+      stockQuantity: 6,
+      imageUrls: ['/products/pkm-paradox-rift.jpg'],
+      isFeatured: false,
+      sku: 'PKM-SV4-BB-001',
+      categoryId: pokemonCategory.id,
+    },
+    {
+      name: 'Pokémon Scarlet & Violet - Obsidian Flames Booster Box',
+      slug: 'pokemon-sv-obsidian-flames-booster-box',
+      description: 'Pokémon TCG: Scarlet & Violet—Obsidian Flames burns with the power of Charizard ex Tera-type. Each booster box contains 36 packs. The Charizard ex Special Illustration Rare is one of the most coveted cards in the modern Pokémon TCG.',
+      brand: Brand.POKEMON,
+      productType: ProductType.BOOSTER_BOX,
+      price: '174.95',
+      compareAtPrice: '189.95',
+      stockQuantity: 4,
+      imageUrls: ['/products/pkm-obsidian-flames.jpg'],
+      isFeatured: false,
+      sku: 'PKM-SV3-BB-001',
+      categoryId: pokemonCategory.id,
+    },
+    {
+      name: 'Pokémon Scarlet & Violet - Paldea Evolved Booster Box',
+      slug: 'pokemon-sv-paldea-evolved-booster-box',
+      description: 'Pokémon TCG: Scarlet & Violet—Paldea Evolved brings new Paldean Pokémon to life. Each booster box contains 36 packs. Features fan favourites like Pikachu ex SIR and powerful Eeveelution ex cards.',
+      brand: Brand.POKEMON,
+      productType: ProductType.BOOSTER_BOX,
+      price: '169.95',
+      compareAtPrice: '189.95',
+      stockQuantity: 9,
+      imageUrls: ['/products/pkm-paldea-evolved.jpg'],
+      isFeatured: false,
+      sku: 'PKM-SV2-BB-001',
+      categoryId: pokemonCategory.id,
+    },
+    {
+      name: 'Pokémon Scarlet & Violet Base Set Booster Box',
+      slug: 'pokemon-sv-base-booster-box',
+      description: 'The inaugural Pokémon TCG: Scarlet & Violet set introduces the new ex mechanic and Tera Pokémon. Each booster box contains 36 packs. Features Koraidon ex, Miraidon ex, and the beloved Pikachu ex.',
+      brand: Brand.POKEMON,
+      productType: ProductType.BOOSTER_BOX,
+      price: '159.95',
+      compareAtPrice: '179.95',
+      stockQuantity: 5,
+      imageUrls: ['/products/pkm-scarlet-violet.jpg'],
+      isFeatured: false,
+      sku: 'PKM-SV1-BB-001',
+      categoryId: pokemonCategory.id,
+    },
+    {
+      name: 'Pokémon Scarlet & Violet - Journey Together Booster Box',
+      slug: 'pokemon-sv-journey-together-booster-box',
+      description: 'Pokémon TCG: Scarlet & Violet—Journey Together celebrates the bond between Trainers and Pokémon. Each booster box contains 36 packs. Features exciting new Pokémon ex and stunning full-art illustration cards.',
+      brand: Brand.POKEMON,
+      productType: ProductType.BOOSTER_BOX,
+      price: '239.95',
+      compareAtPrice: null,
+      stockQuantity: 18,
+      imageUrls: ['/products/pkm-journey-together.jpg'],
+      isFeatured: true,
+      sku: 'PKM-SV9-BB-001',
       categoryId: pokemonCategory.id,
     },
   ];
 
-  // One Piece booster boxes
+  // One Piece booster boxes (OP-01 through OP-13)
   const onePieceProducts = [
+    {
+      name: 'One Piece Card Game - Romance Dawn [OP-01] Booster Box',
+      slug: 'one-piece-op01-romance-dawn-booster-box',
+      description: 'The inaugural One Piece Card Game set — Romance Dawn [OP-01] introduces the core mechanics with iconic Straw Hat Pirates. Each booster box contains 24 packs of 12 cards. Chase the legendary Monkey D. Luffy Secret Rare leader.',
+      brand: Brand.ONE_PIECE,
+      productType: ProductType.BOOSTER_BOX,
+      price: '199.95',
+      compareAtPrice: '219.95',
+      stockQuantity: 8,
+      imageUrls: ['/products/op-01.jpg'],
+      isFeatured: false,
+      sku: 'OP-OP01-BB-001',
+      categoryId: onePieceCategory.id,
+    },
+    {
+      name: 'One Piece Card Game - Paramount War [OP-02] Booster Box',
+      slug: 'one-piece-op02-paramount-war-booster-box',
+      description: 'Paramount War [OP-02] unleashes the chaos of Marineford with Whitebeard, Ace, and the Marine forces. Each booster box contains 24 packs of 12 cards. Features powerful new leader cards and striking parallel art foils.',
+      brand: Brand.ONE_PIECE,
+      productType: ProductType.BOOSTER_BOX,
+      price: '189.95',
+      compareAtPrice: '209.95',
+      stockQuantity: 10,
+      imageUrls: ['/products/op-02.jpg'],
+      isFeatured: false,
+      sku: 'OP-OP02-BB-001',
+      categoryId: onePieceCategory.id,
+    },
+    {
+      name: 'One Piece Card Game - Pillars of Strength [OP-03] Booster Box',
+      slug: 'one-piece-op03-pillars-of-strength-booster-box',
+      description: 'Pillars of Strength [OP-03] focuses on the powerhouses of the One Piece world. Each booster box contains 24 packs of 12 cards. Features Kaido, Big Mom, and their powerful crews with devastating new mechanics.',
+      brand: Brand.ONE_PIECE,
+      productType: ProductType.BOOSTER_BOX,
+      price: '169.95',
+      compareAtPrice: '189.95',
+      stockQuantity: 14,
+      imageUrls: ['/products/op-03.jpg'],
+      isFeatured: false,
+      sku: 'OP-OP03-BB-001',
+      categoryId: onePieceCategory.id,
+    },
     {
       name: 'One Piece Card Game - Kingdoms of Intrigue [OP-04] Booster Box',
       slug: 'one-piece-op04-kingdoms-of-intrigue-booster-box',
-      description:
-        'The One Piece Card Game: Kingdoms of Intrigue [OP-04] booster box contains 24 packs of 12 cards each. Featuring powerful new leaders from the Wano Country arc including Kaido and Yamato. Chase the rare Secret Rare cards and full art leaders for your collection or competitive deck.',
+      description: 'Kingdoms of Intrigue [OP-04] features powerful new leaders from the Wano Country arc including Kaido and Yamato. Each booster box contains 24 packs of 12 cards. Chase the rare Secret Rare cards and full art leaders.',
       brand: Brand.ONE_PIECE,
       productType: ProductType.BOOSTER_BOX,
       price: '149.95',
       compareAtPrice: '169.95',
       stockQuantity: 30,
-      imageUrls: [
-        'https://en.onepiece-cardgame.com/images/products/boosters/op04/mv_01.jpg',
-      ],
+      imageUrls: ['/products/op-04.jpg'],
       isFeatured: true,
       sku: 'OP-OP04-BB-001',
       categoryId: onePieceCategory.id,
@@ -208,16 +311,13 @@ async function main() {
     {
       name: 'One Piece Card Game - Awakening of the New Era [OP-05] Booster Box',
       slug: 'one-piece-op05-awakening-of-the-new-era-booster-box',
-      description:
-        "Awakening of the New Era [OP-05] introduces characters from the Egghead Island arc including Dr. Vegapunk and the Seraphim. Each booster box contains 24 packs of 12 cards. Don't miss out on the chance to pull the iconic Nika Luffy Secret Rare or powerful leader cards.",
+      description: 'Awakening of the New Era [OP-05] introduces characters from the Egghead Island arc including Dr. Vegapunk and the Seraphim. Each booster box contains 24 packs of 12 cards. Pull the iconic Nika Luffy Secret Rare.',
       brand: Brand.ONE_PIECE,
       productType: ProductType.BOOSTER_BOX,
       price: '159.95',
       compareAtPrice: null,
       stockQuantity: 18,
-      imageUrls: [
-        'https://en.onepiece-cardgame.com/images/products/boosters/op05/mv_01.jpg',
-      ],
+      imageUrls: ['/products/op-05.jpg'],
       isFeatured: true,
       sku: 'OP-OP05-BB-001',
       categoryId: onePieceCategory.id,
@@ -225,16 +325,13 @@ async function main() {
     {
       name: 'One Piece Card Game - Wings of the Captain [OP-06] Booster Box',
       slug: 'one-piece-op06-wings-of-the-captain-booster-box',
-      description:
-        'Wings of the Captain [OP-06] focuses on the Straw Hat Pirates and their powerful allies. Each booster box contains 24 packs of 12 cards. Features new leader cards including Monkey D. Luffy and powerful crew members across all the factions.',
+      description: 'Wings of the Captain [OP-06] focuses on the Straw Hat Pirates and their powerful allies. Each booster box contains 24 packs of 12 cards. Features new leader cards including Monkey D. Luffy and crew members across all factions.',
       brand: Brand.ONE_PIECE,
       productType: ProductType.BOOSTER_BOX,
       price: '154.95',
       compareAtPrice: '179.95',
       stockQuantity: 12,
-      imageUrls: [
-        'https://en.onepiece-cardgame.com/images/products/boosters/op06/mv_01.jpg',
-      ],
+      imageUrls: ['/products/op-06.jpg'],
       isFeatured: false,
       sku: 'OP-OP06-BB-001',
       categoryId: onePieceCategory.id,
@@ -242,110 +339,115 @@ async function main() {
     {
       name: 'One Piece Card Game - 500 Years in the Future [OP-07] Booster Box',
       slug: 'one-piece-op07-500-years-future-booster-box',
-      description:
-        '500 Years in the Future [OP-07] delves into the mysteries of the Void Century. Each booster box contains 24 packs of 12 cards. Features powerful new cards with never-before-seen mechanics and stunning artwork from the latest One Piece story arcs.',
+      description: '500 Years in the Future [OP-07] delves into the mysteries of the Void Century. Each booster box contains 24 packs of 12 cards. Features powerful new cards with never-before-seen mechanics and stunning artwork.',
       brand: Brand.ONE_PIECE,
       productType: ProductType.BOOSTER_BOX,
       price: '164.95',
       compareAtPrice: null,
       stockQuantity: 5,
-      imageUrls: [
-        'https://en.onepiece-cardgame.com/images/products/boosters/op07/mv_01.jpg',
-      ],
+      imageUrls: ['/products/op-07.jpg'],
       isFeatured: true,
       sku: 'OP-OP07-BB-001',
       categoryId: onePieceCategory.id,
     },
-  ];
-
-  // Individual cards
-  const individualCards = [
     {
-      name: 'Charizard ex - Special Illustration Rare (Obsidian Flames)',
-      slug: 'charizard-ex-sir-obsidian-flames',
-      description:
-        "One of the most sought-after cards in the Pokémon TCG Scarlet & Violet era. This Special Illustration Rare Charizard ex features stunning full-art landscape artwork by Takumi Wada. Near Mint condition, pulled from Obsidian Flames. The crown jewel of any Pokémon collection. Grading quality: NM/M (Near Mint to Mint).",
-      brand: Brand.POKEMON,
-      productType: ProductType.INDIVIDUAL_CARD,
-      price: '149.95',
-      compareAtPrice: '179.95',
-      stockQuantity: 3,
-      imageUrls: [
-        'https://images.unsplash.com/photo-1558618047-3c8c76ca7d13?w=600',
-        'https://images.unsplash.com/photo-1613771404784-3a5686aa2be3?w=600',
-      ],
-      isFeatured: true,
-      sku: 'PKM-IND-CHARZEX-SIR-001',
-      categoryId: pokemonCategory.id,
-    },
-    {
-      name: 'Umbreon VMAX - Alternate Art (Evolving Skies)',
-      slug: 'umbreon-vmax-alternate-art-evolving-skies',
-      description:
-        "The iconic Umbreon VMAX Alternate Art from Evolving Skies is one of the most beloved cards in the modern Pokémon TCG. Features breathtaking artwork of Umbreon standing in a moonlit forest. A cornerstone card for any serious Pokémon TCG collection. Condition: Near Mint.",
-      brand: Brand.POKEMON,
-      productType: ProductType.INDIVIDUAL_CARD,
-      price: '89.95',
-      compareAtPrice: '109.95',
-      stockQuantity: 5,
-      imageUrls: ['https://images.unsplash.com/photo-1605979257913-1704eb7b6246?w=600'],
-      isFeatured: false,
-      sku: 'PKM-IND-UMBVMAX-AA-001',
-      categoryId: pokemonCategory.id,
-    },
-    {
-      name: 'Monkey D. Luffy - Secret Rare Leader (One Piece OP-01)',
-      slug: 'monkey-d-luffy-secret-rare-op01',
-      description:
-        "The legendary Secret Rare Monkey D. Luffy leader card from the inaugural One Piece Card Game set. Features stunning alternate artwork and holographic foiling. An essential card for One Piece TCG collectors and competitive players. Condition: Near Mint. This is the Don!! version with 5 Don!! power.",
+      name: 'One Piece Card Game - Two Legends [OP-08] Booster Box',
+      slug: 'one-piece-op08-two-legends-booster-box',
+      description: 'Two Legends [OP-08] pits the greatest pirate legends against each other. Each booster box contains 24 packs of 12 cards. Features Roger and Whitebeard in breathtaking new artwork with powerful game mechanics.',
       brand: Brand.ONE_PIECE,
-      productType: ProductType.INDIVIDUAL_CARD,
-      price: '79.95',
+      productType: ProductType.BOOSTER_BOX,
+      price: '169.95',
+      compareAtPrice: '189.95',
+      stockQuantity: 20,
+      imageUrls: ['/products/op-08.jpg'],
+      isFeatured: false,
+      sku: 'OP-OP08-BB-001',
+      categoryId: onePieceCategory.id,
+    },
+    {
+      name: 'One Piece Card Game - Emperors in the New World [OP-09] Booster Box',
+      slug: 'one-piece-op09-emperors-new-world-booster-box',
+      description: 'Emperors in the New World [OP-09] showcases the Four Emperors ruling the seas. Each booster box contains 24 packs of 12 cards. Features Yonko-focused deck strategies and spectacular Secret Rare pulls.',
+      brand: Brand.ONE_PIECE,
+      productType: ProductType.BOOSTER_BOX,
+      price: '174.95',
       compareAtPrice: null,
-      stockQuantity: 7,
-      imageUrls: ['https://images.unsplash.com/photo-1519682577862-22b62b24cb37?w=600'],
-      isFeatured: true,
-      sku: 'OP-IND-LUFFY-SR-OP01-001',
+      stockQuantity: 15,
+      imageUrls: ['/products/op-09.jpg'],
+      isFeatured: false,
+      sku: 'OP-OP09-BB-001',
       categoryId: onePieceCategory.id,
     },
     {
-      name: 'Roronoa Zoro - Parallel Art (One Piece OP-02)',
-      slug: 'roronoa-zoro-parallel-op02',
-      description:
-        "The premium Parallel Art version of Roronoa Zoro from One Piece Card Game Memorial Collection [OP-02]. Features stunning foil treatment across the entire card face with detailed artwork. One of the most popular character cards for One Piece TCG players. Condition: Near Mint to Mint.",
+      name: 'One Piece Card Game - Royal Blood [OP-10] Booster Box',
+      slug: 'one-piece-op10-royal-blood-booster-box',
+      description: 'Royal Blood [OP-10] explores the noble bloodlines and royal families of the One Piece world. Each booster box contains 24 packs of 12 cards. New powerful Don!! mechanics and stunning throne room artwork.',
       brand: Brand.ONE_PIECE,
-      productType: ProductType.INDIVIDUAL_CARD,
-      price: '34.95',
-      compareAtPrice: '44.95',
-      stockQuantity: 12,
-      imageUrls: ['https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=600'],
-      isFeatured: false,
-      sku: 'OP-IND-ZORO-PA-OP02-001',
+      productType: ProductType.BOOSTER_BOX,
+      price: '179.95',
+      compareAtPrice: '199.95',
+      stockQuantity: 22,
+      imageUrls: ['/products/op-10.jpg'],
+      isFeatured: true,
+      sku: 'OP-OP10-BB-001',
       categoryId: onePieceCategory.id,
     },
     {
-      name: 'Pikachu ex - Special Illustration Rare (Paldea Evolved)',
-      slug: 'pikachu-ex-sir-paldea-evolved',
-      description:
-        'The adorable and highly collectible Pikachu ex Special Illustration Rare from Paldea Evolved. Features Pikachu in a charming landscape with vibrant artwork. A fan-favourite card that sells out quickly. Perfect gift for any Pokémon fan. Condition: Near Mint.',
-      brand: Brand.POKEMON,
-      productType: ProductType.INDIVIDUAL_CARD,
-      price: '44.95',
-      compareAtPrice: '54.95',
-      stockQuantity: 8,
-      imageUrls: ['https://images.unsplash.com/photo-1614680376739-414d95ff43df?w=600'],
+      name: 'One Piece Card Game - A Fist of Divine Speed [OP-11] Booster Box',
+      slug: 'one-piece-op11-fist-divine-speed-booster-box',
+      description: 'A Fist of Divine Speed [OP-11] features the fastest and most powerful warriors of the Grand Line. Each booster box contains 24 packs of 12 cards. Chase the incredible Special Art and Secret Rare cards.',
+      brand: Brand.ONE_PIECE,
+      productType: ProductType.BOOSTER_BOX,
+      price: '184.95',
+      compareAtPrice: null,
+      stockQuantity: 16,
+      imageUrls: ['/products/op-11.jpg'],
       isFeatured: false,
-      sku: 'PKM-IND-PIKEX-SIR-001',
-      categoryId: pokemonCategory.id,
+      sku: 'OP-OP11-BB-001',
+      categoryId: onePieceCategory.id,
+    },
+    {
+      name: 'One Piece Card Game - Legacy of the Master [OP-12] Booster Box',
+      slug: 'one-piece-op12-legacy-master-booster-box',
+      description: 'Legacy of the Master [OP-12] honours the teacher-student bonds that shape the greatest pirates. Each booster box contains 24 packs of 12 cards. Featuring legendary master-student duos in epic artwork.',
+      brand: Brand.ONE_PIECE,
+      productType: ProductType.BOOSTER_BOX,
+      price: '189.95',
+      compareAtPrice: '209.95',
+      stockQuantity: 10,
+      imageUrls: ['/products/op-12.jpg'],
+      isFeatured: false,
+      sku: 'OP-OP12-BB-001',
+      categoryId: onePieceCategory.id,
+    },
+    {
+      name: 'One Piece Card Game - Carrying On His Will [OP-13] Booster Box',
+      slug: 'one-piece-op13-carrying-on-his-will-booster-box',
+      description: 'Carrying On His Will [OP-13] celebrates the inherited will that drives the greatest pirates forward. Each booster box contains 24 packs of 12 cards. A landmark anniversary set with breathtaking art commemorating the Three Brothers.',
+      brand: Brand.ONE_PIECE,
+      productType: ProductType.BOOSTER_BOX,
+      price: '199.95',
+      compareAtPrice: null,
+      stockQuantity: 25,
+      imageUrls: ['/products/op-13.jpg'],
+      isFeatured: true,
+      sku: 'OP-OP13-BB-001',
+      categoryId: onePieceCategory.id,
     },
   ];
 
-  const allProducts = [...pokemonProducts, ...onePieceProducts, ...individualCards];
+  const allProducts = [...pokemonProducts, ...onePieceProducts];
 
   for (const product of allProducts) {
     await prisma.product.upsert({
       where: { slug: product.slug },
-      update: {},
+      update: {
+        imageUrls: product.imageUrls,
+        stockQuantity: product.stockQuantity,
+        price: product.price as any,
+        compareAtPrice: product.compareAtPrice as any,
+        isFeatured: product.isFeatured,
+      },
       create: {
         ...product,
         price: product.price as any,
@@ -354,16 +456,8 @@ async function main() {
     });
   }
 
-  console.log(`✅ Created ${allProducts.length} products`);
+  console.log(`✅ Seeded ${allProducts.length} products (${pokemonProducts.length} Pokémon + ${onePieceProducts.length} One Piece)`);
   console.log('🎉 Seed complete!');
-  console.log('');
-  console.log('Admin credentials:');
-  console.log('  Email: admin@heartofthecards.com.au');
-  console.log('  Password: Admin123!');
-  console.log('');
-  console.log('Demo customer credentials:');
-  console.log('  Email: demo@heartofthecards.com.au');
-  console.log('  Password: Customer123!');
 }
 
 main()

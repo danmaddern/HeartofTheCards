@@ -79,7 +79,7 @@ export const HeroBanner = () => {
             {/* One Piece OP-07 — back */}
             <div className="absolute top-0 right-10 w-48 h-64 rounded-2xl transform rotate-6 shadow-2xl overflow-hidden border border-crimson-500/30">
               <img
-                src="https://en.onepiece-cardgame.com/images/products/boosters/op07/mv_01.jpg"
+                src="/products/op-07.jpg"
                 alt="One Piece OP-07 Booster Box"
                 className="w-full h-full object-cover"
               />
@@ -87,7 +87,7 @@ export const HeroBanner = () => {
             {/* Pokémon Prismatic Evolutions — front */}
             <div className="absolute top-8 right-0 w-48 h-64 rounded-2xl transform -rotate-2 shadow-2xl overflow-hidden border border-gold-500/30">
               <img
-                src="https://d1i787aglh9bmb.cloudfront.net/assets/img/sv-expansions/sv8dot5/collections/en-us/sv8pt5-booster-bundle-en.png"
+                src="/products/pkm-prismatic-evolutions.png"
                 alt="Pokémon Prismatic Evolutions"
                 className="w-full h-full object-contain bg-dark-800 p-2"
               />

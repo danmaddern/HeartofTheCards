@@ -83,8 +83,8 @@ export const Login = () => {
           <div className="w-12 h-12 bg-gradient-to-br from-gold-400 to-gold-600 rounded-xl flex items-center justify-center mx-auto mb-4">
             <span className="text-dark-950 font-display font-bold text-xl">H</span>
           </div>
-          <h1 className="font-display font-bold text-white text-2xl">Welcome Back</h1>
-          <p className="text-dark-400 text-sm mt-1">Sign in to your Heart of the Cards account</p>
+          <h1 className="font-display font-bold text-dark-900 text-2xl">Welcome Back</h1>
+          <p className="text-slate-500 text-sm mt-1">Sign in to your Heart of the Cards account</p>
         </div>
 
         <div className="card p-6 space-y-5">
@@ -104,16 +104,16 @@ export const Login = () => {
           </button>
 
           <div className="flex items-center gap-3">
-            <div className="flex-1 h-px bg-dark-700" />
-            <span className="text-dark-500 text-xs">or sign in with email</span>
-            <div className="flex-1 h-px bg-dark-700" />
+            <div className="flex-1 h-px bg-slate-200" />
+            <span className="text-slate-400 text-xs">or sign in with email</span>
+            <div className="flex-1 h-px bg-slate-200" />
           </div>
 
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
             <div>
               <label className="label">Email Address</label>
               <div className="relative">
-                <Mail size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-dark-500" />
+                <Mail size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
                 <input
                   {...register('email')}
                   type="email"
@@ -133,7 +133,7 @@ export const Login = () => {
                 </Link>
               </div>
               <div className="relative">
-                <Lock size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-dark-500" />
+                <Lock size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
                 <input
                   {...register('password')}
                   type={showPw ? 'text' : 'password'}
@@ -144,7 +144,7 @@ export const Login = () => {
                 <button
                   type="button"
                   onClick={() => setShowPw(!showPw)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-dark-500 hover:text-dark-300"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
                 >
                   {showPw ? <EyeOff size={16} /> : <Eye size={16} />}
                 </button>
@@ -157,19 +157,19 @@ export const Login = () => {
             </button>
           </form>
 
-          <p className="text-center text-dark-400 text-sm">
+          <p className="text-center text-slate-500 text-sm">
             Don't have an account?{' '}
-            <Link to="/register" className="text-gold-400 hover:text-gold-300 font-medium transition-colors">
+            <Link to="/register" className="text-gold-500 hover:text-gold-600 font-medium transition-colors">
               Create one
             </Link>
           </p>
 
           {/* Dev bypass — remove before production */}
-          <div className="border-t border-dark-700 pt-4">
+          <div className="border-t border-slate-200 pt-4">
             <button
               type="button"
               onClick={handleDevLogin}
-              className="w-full py-2 px-4 rounded-lg border border-dashed border-dark-600 text-dark-400 hover:text-dark-200 hover:border-dark-500 text-xs font-mono transition-colors"
+              className="w-full py-2 px-4 rounded-lg border border-dashed border-slate-300 text-slate-400 hover:text-slate-600 hover:border-slate-400 text-xs font-mono transition-colors"
             >
               ⚡ Dev Login (admin)
             </button>

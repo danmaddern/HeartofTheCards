@@ -46,8 +46,8 @@ export const Header = () => {
               <span className="text-dark-950 font-display font-bold text-sm">H</span>
             </div>
             <div className="hidden sm:block">
-              <span className="font-display font-bold text-white text-lg leading-none">Heart of the</span>
-              <span className="font-display font-bold text-gold-400 text-lg leading-none ml-1">Cards</span>
+              <span className="font-display font-semibold text-white text-xl leading-none tracking-wide">Heart of the </span>
+              <span className="font-display font-semibold text-gold-400 text-xl leading-none tracking-wide">Cards</span>
             </div>
           </Link>
 

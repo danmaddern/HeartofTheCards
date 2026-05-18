@@ -7,6 +7,7 @@ const adminNav = [
   { to: '/admin/products', label: 'Products', icon: Package },
   { to: '/admin/orders', label: 'Orders', icon: ShoppingBag },
   { to: '/admin/inventory', label: 'Inventory', icon: Warehouse },
+  { to: '/admin/analytics', label: 'Analytics', icon: BarChart3 },
 ];
 
 export const AdminLayout = () => {

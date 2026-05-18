@@ -92,6 +92,29 @@ export class AdminController {
     return this.adminService.setStock(id, quantity);
   }
 
+  @Get('charts/revenue')
+  getRevenueOverTime(@Query('days') days?: string) {
+    return this.adminService.getRevenueOverTime(Number(days) || 30);
+  }
+
+  @Get('charts/sales-by-brand')
+  getSalesByBrand() {
+    return this.adminService.getSalesByBrand();
+  }
+
+  @Get('charts/sales-by-type')
+  getSalesByProductType() {
+    return this.adminService.getSalesByProductType();
+  }
+
+  @Get('charts/stock')
+  getStockOverview(
+    @Query('brand') brand?: string,
+    @Query('productType') productType?: string,
+  ) {
+    return this.adminService.getStockOverview(brand, productType);
+  }
+
   @Post('upload')
   @UseInterceptors(
     FileInterceptor('file', {

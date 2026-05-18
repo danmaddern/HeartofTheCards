@@ -11,6 +11,7 @@ import { cartService } from '../services/cart.service';
 import { useAuthStore } from '../store/authStore';
 import { useCartStore } from '../store/cartStore';
 import { handleApiError } from '../lib/api';
+import { apiUrl } from '../lib/apiUrl';
 
 const schema = z.object({
   email: z.string().email('Invalid email address'),
@@ -51,7 +52,7 @@ export const Login = () => {
   };
 
   const handleGoogleLogin = () => {
-    window.location.href = `${window.location.origin.replace('5173', '3000')}/api/auth/google`;
+    window.location.href = apiUrl('/api/auth/google');
   };
 
   const handleDevLogin = async () => {
@@ -67,7 +68,7 @@ export const Login = () => {
       toast.success('Dev admin login');
       navigate(redirect);
     } catch {
-      toast.error('Dev user not seeded — run pnpm db:seed in api/');
+      toast.error('Dev user not seeded — run npm run db:seed in CardAppBE/');
     }
   };
 

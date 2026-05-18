@@ -152,4 +152,85 @@ export class AdminService {
       include: { category: true },
     });
   }
+
+  async getRevenueOverTime(days: number = 30) {
+    const from = new Date();
+    from.setDate(from.getDate() - (days - 1));
+    from.setHours(0, 0, 0, 0);
+
+    const orders = await this.prisma.order.findMany({
+      where: { paymentStatus: 'PAID', createdAt: { gte: from } },
+      select: { createdAt: true, total: true },
+    });
+
+    const grouped: Record<string, number> = {};
+    for (const order of orders) {
+      const date = order.createdAt.toISOString().split('T')[0];
+      grouped[date] = (grouped[date] || 0) + Number(order.total);
+    }
+
+    const result: { date: string; revenue: number }[] = [];
+    const cursor = new Date(from);
+    const today = new Date();
+    today.setHours(23, 59, 59, 999);
+    while (cursor <= today) {
+      const date = cursor.toISOString().split('T')[0];
+      result.push({ date, revenue: Number((grouped[date] || 0).toFixed(2)) });
+      cursor.setDate(cursor.getDate() + 1);
+    }
+    return result;
+  }
+
+  async getSalesByBrand() {
+    const items = await this.prisma.orderItem.findMany({
+      include: { product: { select: { brand: true } } },
+    });
+
+    const grouped: Record<string, { units: number; revenue: number }> = {};
+    for (const item of items) {
+      const brand = item.product?.brand ?? 'UNKNOWN';
+      if (!grouped[brand]) grouped[brand] = { units: 0, revenue: 0 };
+      grouped[brand].units += item.quantity;
+      grouped[brand].revenue += Number(item.totalPrice);
+    }
+
+    return Object.entries(grouped).map(([brand, d]) => ({
+      brand,
+      units: d.units,
+      revenue: Number(d.revenue.toFixed(2)),
+    }));
+  }
+
+  async getSalesByProductType() {
+    const items = await this.prisma.orderItem.findMany({
+      include: { product: { select: { productType: true } } },
+    });
+
+    const grouped: Record<string, { units: number; revenue: number }> = {};
+    for (const item of items) {
+      const type = item.product?.productType ?? 'UNKNOWN';
+      if (!grouped[type]) grouped[type] = { units: 0, revenue: 0 };
+      grouped[type].units += item.quantity;
+      grouped[type].revenue += Number(item.totalPrice);
+    }
+
+    return Object.entries(grouped).map(([type, d]) => ({
+      type,
+      units: d.units,
+      revenue: Number(d.revenue.toFixed(2)),
+    }));
+  }
+
+  async getStockOverview(brand?: string, productType?: string) {
+    const where: any = { isActive: true };
+    if (brand) where.brand = brand;
+    if (productType) where.productType = productType;
+
+    return this.prisma.product.findMany({
+      where,
+      select: { id: true, name: true, sku: true, stockQuantity: true, brand: true, productType: true },
+      orderBy: { stockQuantity: 'asc' },
+      take: 25,
+    });
+  }
 }

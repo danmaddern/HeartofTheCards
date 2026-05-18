@@ -22,6 +22,7 @@ import { AdminDashboard } from './pages/admin/Dashboard';
 import { AdminProducts } from './pages/admin/AdminProducts';
 import { AdminOrders } from './pages/admin/AdminOrders';
 import { AdminInventory } from './pages/admin/AdminInventory';
+import { AdminAnalytics } from './pages/admin/AdminAnalytics';
 
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   const { isAuthenticated } = useAuthStore();
@@ -53,6 +54,7 @@ export default function App() {
               <Route path="products" element={<AdminProducts />} />
               <Route path="orders" element={<AdminOrders />} />
               <Route path="inventory" element={<AdminInventory />} />
+              <Route path="analytics" element={<AdminAnalytics />} />
             </Route>
           </Route>
         </Routes>

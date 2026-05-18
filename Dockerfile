@@ -1,6 +1,4 @@
-FROM node:20-slim AS builder
-
-RUN apt-get update -y && apt-get install -y openssl && rm -rf /var/lib/apt/lists/*
+FROM node:20 AS builder
 
 WORKDIR /app
 
@@ -17,9 +15,7 @@ RUN npx nest build
 
 # ─── Production image ────────────────────────────────────────────────────────
 
-FROM node:20-slim AS production
-
-RUN apt-get update -y && apt-get install -y openssl && rm -rf /var/lib/apt/lists/*
+FROM node:20 AS production
 
 WORKDIR /app
 
@@ -34,4 +30,4 @@ RUN mkdir -p uploads
 
 EXPOSE 3001
 
-CMD ["npm", "run", "start:prod"]
+CMD ["node", "dist/main"]

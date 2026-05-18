@@ -6,7 +6,7 @@
     "dev": "nest start --watch",
     "build": "prisma generate && nest build",
     "start": "node dist/main",
-    "start:prod": "node dist/src/main",
+    "start:prod": "PRISMA_QUERY_ENGINE_LIBRARY=/app/node_modules/.prisma/client/libquery_engine-linux-musl-openssl-3.0.x.so.node node dist/src/main",
     "migrate:prod": "prisma migrate deploy",
     "lint": "eslint src --ext .ts",
     "test": "jest",

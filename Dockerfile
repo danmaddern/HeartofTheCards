@@ -22,7 +22,10 @@ WORKDIR /app
 COPY CardAppBE/package*.json ./
 COPY CardAppBE/prisma ./prisma/
 
-RUN npm ci --omit=dev && npx prisma generate
+RUN npm ci --omit=dev
+
+# Reuse the Prisma client generated in the builder — same platform, no re-detection needed
+COPY --from=builder /app/node_modules/.prisma ./node_modules/.prisma
 
 COPY --from=builder /app/dist ./dist
 

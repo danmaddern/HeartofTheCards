@@ -1,0 +1,9 @@
+CardAppFE
+node_modules
+CardAppBE/node_modules
+CardAppBE/dist
+CardAppBE/.env
+CardAppBE/.env.*
+CardAppBE/uploads
+*.log
+coverage

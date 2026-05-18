@@ -2,7 +2,6 @@ services:
   - type: web
     name: heartofthecards-api
     runtime: docker
-    rootDir: CardAppBE
     dockerfilePath: ./Dockerfile
     branch: main
     region: singapore

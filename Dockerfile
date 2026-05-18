@@ -1,5 +1,7 @@
 FROM node:20-alpine AS builder
 
+RUN apk add --no-cache openssl
+
 WORKDIR /app
 
 COPY CardAppBE/package*.json ./
@@ -16,6 +18,8 @@ RUN npx nest build
 # ─── Production image ────────────────────────────────────────────────────────
 
 FROM node:20-alpine AS production
+
+RUN apk add --no-cache openssl
 
 WORKDIR /app
 

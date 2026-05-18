@@ -86,11 +86,11 @@ async function main() {
   });
   console.log('👤 Dev bypass: dev@heartofthecards.dev / dev');
 
-  // Owner account — links automatically when you sign in with Google
+  // Admin accounts — link automatically when signing in with Google
   const ownerPasswordHash = await bcrypt.hash(process.env.OWNER_PASSWORD || 'ChangeMe123!', 10);
   await prisma.user.upsert({
     where: { email: 'dan.maddern@gmail.com' },
-    update: {},
+    update: { role: Role.ADMIN },
     create: {
       email: 'dan.maddern@gmail.com',
       passwordHash: ownerPasswordHash,
@@ -99,7 +99,20 @@ async function main() {
       role: Role.ADMIN,
     },
   });
-  console.log('👤 Owner: dan.maddern@gmail.com (sign in with Google or set OWNER_PASSWORD env var)');
+  console.log('👤 Admin: dan.maddern@gmail.com');
+
+  await prisma.user.upsert({
+    where: { email: 'cochranemitchell.2000@gmail.com' },
+    update: { role: Role.ADMIN },
+    create: {
+      email: 'cochranemitchell.2000@gmail.com',
+      passwordHash: ownerPasswordHash,
+      firstName: 'Mitchell',
+      lastName: 'Cochrane',
+      role: Role.ADMIN,
+    },
+  });
+  console.log('👤 Admin: cochranemitchell.2000@gmail.com');
 
   // Pokémon booster boxes
   const pokemonProducts = [

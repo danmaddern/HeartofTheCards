@@ -68,21 +68,29 @@ export const HeroBanner = () => {
           </motion.div>
         </div>
 
-        {/* Floating card previews */}
+        {/* Floating product images */}
         <div className="absolute right-0 top-0 bottom-0 w-1/3 hidden lg:flex items-center justify-end pr-8">
           <motion.div
             initial={{ opacity: 0, x: 40 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.8, delay: 0.3 }}
-            className="relative w-64 h-80"
+            className="relative w-72 h-80"
           >
-            <div className="absolute top-0 right-8 w-44 h-60 bg-gradient-to-br from-yellow-400/20 to-orange-500/10 rounded-xl border border-yellow-500/20 transform rotate-6 shadow-2xl" />
-            <div className="absolute top-4 right-4 w-44 h-60 bg-gradient-to-br from-red-500/20 to-red-800/10 rounded-xl border border-red-500/20 transform rotate-2 shadow-2xl" />
-            <div className="absolute top-8 right-0 w-44 h-60 bg-gradient-to-br from-gold-400/20 to-amber-600/10 rounded-xl border border-gold-500/30 transform -rotate-1 shadow-2xl flex items-center justify-center">
-              <div className="text-center">
-                <p className="font-display text-gold-400 font-bold text-lg">🃏</p>
-                <p className="text-gold-300 text-xs font-medium mt-1">New Arrivals</p>
-              </div>
+            {/* One Piece OP-07 — back */}
+            <div className="absolute top-0 right-10 w-48 h-64 rounded-2xl transform rotate-6 shadow-2xl overflow-hidden border border-crimson-500/30">
+              <img
+                src="https://en.onepiece-cardgame.com/images/products/boosters/op07/mv_01.jpg"
+                alt="One Piece OP-07 Booster Box"
+                className="w-full h-full object-cover"
+              />
+            </div>
+            {/* Pokémon Prismatic Evolutions — front */}
+            <div className="absolute top-8 right-0 w-48 h-64 rounded-2xl transform -rotate-2 shadow-2xl overflow-hidden border border-gold-500/30">
+              <img
+                src="https://d1i787aglh9bmb.cloudfront.net/assets/img/sv-expansions/sv8dot5/collections/en-us/sv8pt5-booster-bundle-en.png"
+                alt="Pokémon Prismatic Evolutions"
+                className="w-full h-full object-contain bg-dark-800 p-2"
+              />
             </div>
           </motion.div>
         </div>

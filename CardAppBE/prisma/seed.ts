@@ -127,8 +127,7 @@ async function main() {
       compareAtPrice: '279.95',
       stockQuantity: 15,
       imageUrls: [
-        'https://images.unsplash.com/photo-1605979257913-1704eb7b6246?w=600',
-        'https://images.unsplash.com/photo-1614680376739-414d95ff43df?w=600',
+        'https://d1i787aglh9bmb.cloudfront.net/assets/img/sv-expansions/sv8dot5/collections/en-us/sv8pt5-booster-bundle-en.png',
       ],
       isFeatured: true,
       sku: 'PKM-SV-PE-BB-001',
@@ -145,8 +144,7 @@ async function main() {
       compareAtPrice: null,
       stockQuantity: 20,
       imageUrls: [
-        'https://images.unsplash.com/photo-1546961342-ea5f62d5a27b?w=600',
-        'https://images.unsplash.com/photo-1614680376408-16a8e0a89b00?w=600',
+        'https://d1i787aglh9bmb.cloudfront.net/assets/img/sv-expansions/sv07/collections/en-us/sv07-booster-display-en.png',
       ],
       isFeatured: true,
       sku: 'PKM-SV-SC-BB-001',
@@ -162,7 +160,9 @@ async function main() {
       price: '199.95',
       compareAtPrice: '229.95',
       stockQuantity: 8,
-      imageUrls: ['https://images.unsplash.com/photo-1613771404784-3a5686aa2be3?w=600'],
+      imageUrls: [
+        'https://d1i787aglh9bmb.cloudfront.net/assets/img/sv-expansions/sv06/collections/en-us/p9505-sv06-3d-booster-display-36ct-right-en.png',
+      ],
       isFeatured: false,
       sku: 'PKM-SV-TM-BB-001',
       categoryId: pokemonCategory.id,
@@ -177,7 +177,9 @@ async function main() {
       price: '89.95',
       compareAtPrice: '99.95',
       stockQuantity: 25,
-      imageUrls: ['https://images.unsplash.com/photo-1612036782180-6f0b6cd846fe?w=600'],
+      imageUrls: [
+        'https://static-assets.pokemon.com/content-assets/cms2/img/trading-card-game/series/incrementals/swsh125-elite-trainer-box/swsh125-elite-trainer-box-169-en.png',
+      ],
       isFeatured: false,
       sku: 'PKM-SWSH-CZ-ETB-001',
       categoryId: pokemonCategory.id,
@@ -197,8 +199,7 @@ async function main() {
       compareAtPrice: '169.95',
       stockQuantity: 30,
       imageUrls: [
-        'https://images.unsplash.com/photo-1519682577862-22b62b24cb37?w=600',
-        'https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=600',
+        'https://en.onepiece-cardgame.com/images/products/boosters/op04/mv_01.jpg',
       ],
       isFeatured: true,
       sku: 'OP-OP04-BB-001',
@@ -215,8 +216,7 @@ async function main() {
       compareAtPrice: null,
       stockQuantity: 18,
       imageUrls: [
-        'https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=600',
-        'https://images.unsplash.com/photo-1519682577862-22b62b24cb37?w=600',
+        'https://en.onepiece-cardgame.com/images/products/boosters/op05/mv_01.jpg',
       ],
       isFeatured: true,
       sku: 'OP-OP05-BB-001',
@@ -232,7 +232,9 @@ async function main() {
       price: '154.95',
       compareAtPrice: '179.95',
       stockQuantity: 12,
-      imageUrls: ['https://images.unsplash.com/photo-1614680376408-16a8e0a89b00?w=600'],
+      imageUrls: [
+        'https://en.onepiece-cardgame.com/images/products/boosters/op06/mv_01.jpg',
+      ],
       isFeatured: false,
       sku: 'OP-OP06-BB-001',
       categoryId: onePieceCategory.id,
@@ -247,7 +249,9 @@ async function main() {
       price: '164.95',
       compareAtPrice: null,
       stockQuantity: 5,
-      imageUrls: ['https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=600'],
+      imageUrls: [
+        'https://en.onepiece-cardgame.com/images/products/boosters/op07/mv_01.jpg',
+      ],
       isFeatured: true,
       sku: 'OP-OP07-BB-001',
       categoryId: onePieceCategory.id,

@@ -281,20 +281,20 @@ export const Checkout = () => {
                 {!showNewAddress && selectedAddressId && loyalty && (
                   <div className="mt-4 space-y-3">
                     {/* Loyalty Rewards */}
-                    {loyalty.points > 0 && (
+                    {(loyalty.points ?? 0) > 0 && (
                       <div className="border border-dark-700 rounded-xl p-4">
                         <div className="flex items-center gap-2 mb-3">
                           <Star size={16} className="text-gold-400" />
                           <span className="text-white text-sm font-medium">Use Rewards Points</span>
-                          <span className="text-dark-400 text-xs ml-auto">{loyalty.points.toLocaleString()} pts available</span>
+                          <span className="text-dark-400 text-xs ml-auto">{(loyalty.points ?? 0).toLocaleString()} pts available</span>
                         </div>
-                        {loyalty.availableRewards.length === 0 ? (
+                        {(loyalty.availableRewards?.length ?? 0) === 0 ? (
                           <p className="text-dark-400 text-xs">Keep shopping to unlock rewards! Next reward at {
-                            loyalty.rewards.sort((a: Reward, b: Reward) => a.pointsCost - b.pointsCost)[0]?.pointsCost
+                            loyalty.rewards?.slice().sort((a: Reward, b: Reward) => a.pointsCost - b.pointsCost)[0]?.pointsCost
                           } pts.</p>
                         ) : (
                           <div className="space-y-2">
-                            {loyalty.availableRewards.map((reward: Reward) => (
+                            {(loyalty.availableRewards ?? []).map((reward: Reward) => (
                               <label
                                 key={reward.id}
                                 className={`flex items-center gap-3 p-2.5 rounded-lg border cursor-pointer transition-all ${

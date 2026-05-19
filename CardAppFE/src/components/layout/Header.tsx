@@ -185,8 +185,8 @@ export const Header = () => {
                         {loyalty !== undefined && (
                           <div className="flex items-center gap-1.5 mt-2">
                             <Star size={11} className="text-gold-400 fill-gold-400 flex-shrink-0" />
-                            <span className="text-gold-400 text-xs font-semibold">{loyalty.points.toLocaleString()} pts</span>
-                            {loyalty.availableRewards.length > 0 && (
+                            <span className="text-gold-400 text-xs font-semibold">{(loyalty.points ?? 0).toLocaleString()} pts</span>
+                            {(loyalty.availableRewards?.length ?? 0) > 0 && (
                               <span className="bg-gold-400/15 text-gold-400 text-[10px] font-medium px-1.5 py-0.5 rounded-full">
                                 {loyalty.availableRewards.length} reward{loyalty.availableRewards.length !== 1 ? 's' : ''}
                               </span>

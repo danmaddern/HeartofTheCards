@@ -97,15 +97,15 @@ export const Account = () => {
               <div>
                 <p className="text-dark-300 text-xs font-medium uppercase tracking-wider">Loyalty Points</p>
                 <div className="flex items-end gap-2">
-                  <span className="text-3xl font-display font-bold text-white">{loyalty.points.toLocaleString()}</span>
+                  <span className="text-3xl font-display font-bold text-white">{(loyalty.points ?? 0).toLocaleString()}</span>
                   <span className="text-gold-400 text-sm mb-0.5">pts</span>
                 </div>
-                {loyalty.availableRewards.length > 0 ? (
+                {(loyalty.availableRewards?.length ?? 0) > 0 ? (
                   <p className="text-emerald-400 text-xs mt-0.5 flex items-center gap-1">
                     <Gift size={11} /> {loyalty.availableRewards.length} reward{loyalty.availableRewards.length !== 1 ? 's' : ''} available
                   </p>
                 ) : (
-                  <p className="text-dark-400 text-xs mt-0.5">{loyalty.totalEarned.toLocaleString()} pts earned lifetime</p>
+                  <p className="text-dark-400 text-xs mt-0.5">{(loyalty.totalEarned ?? 0).toLocaleString()} pts earned lifetime</p>
                 )}
               </div>
             </div>

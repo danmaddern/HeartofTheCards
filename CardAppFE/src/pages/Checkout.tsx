@@ -7,11 +7,12 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import toast from 'react-hot-toast';
-import { MapPin, Plus, CheckCircle } from 'lucide-react';
+import { MapPin, Plus, CheckCircle, Star, Gift, X } from 'lucide-react';
 import { cartService } from '../services/cart.service';
 import { ordersService } from '../services/orders.service';
 import { addressesService } from '../services/addresses.service';
 import { paymentsService } from '../services/payments.service';
+import { loyaltyService, Reward } from '../services/loyalty.service';
 import { useAuthStore } from '../store/authStore';
 import { useCartStore } from '../store/cartStore';
 import { Address } from '../types';
@@ -40,6 +41,8 @@ export const Checkout = () => {
   const [showNewAddress, setShowNewAddress] = useState(false);
   const [createdOrderId, setCreatedOrderId] = useState<string | null>(null);
   const [paypalOrderId, setPaypalOrderId] = useState<string | null>(null);
+  const [selectedRewardId, setSelectedRewardId] = useState<string | null>(null);
+  const [pointsEarnedPreview, setPointsEarnedPreview] = useState<number>(0);
 
   const { data: addresses, refetch: refetchAddresses } = useQuery({
     queryKey: ['addresses'],
@@ -50,6 +53,12 @@ export const Checkout = () => {
   const { data: cartData } = useQuery({
     queryKey: ['cart-checkout'],
     queryFn: () => cartService.getCart(),
+    enabled: isAuthenticated,
+  });
+
+  const { data: loyalty } = useQuery({
+    queryKey: ['loyalty-balance'],
+    queryFn: loyaltyService.getBalance,
     enabled: isAuthenticated,
   });
 
@@ -83,8 +92,12 @@ export const Checkout = () => {
   const handleProceedToPayment = async () => {
     if (!selectedAddressId) { toast.error('Please select a delivery address'); return; }
     try {
-      const order = await ordersService.create({ deliveryAddressId: selectedAddressId });
+      const order = await ordersService.create({
+        deliveryAddressId: selectedAddressId,
+        rewardId: selectedRewardId ?? undefined,
+      } as any);
       setCreatedOrderId(order.id);
+      setPointsEarnedPreview(Math.floor(subtotal));
       const { paypalOrderId: ppOrderId } = await paymentsService.createPayPalOrder(order.id);
       setPaypalOrderId(ppOrderId);
       setStep('payment');
@@ -107,8 +120,12 @@ export const Checkout = () => {
   };
 
   const displayCart = cartData || cart;
-  const shippingCost = displayCart && Number(displayCart.subtotal) >= 150 ? 0 : 9.95;
-  const total = displayCart ? Number(displayCart.subtotal) + shippingCost : 0;
+  const subtotal = displayCart ? Number(displayCart.subtotal) : 0;
+  const selectedReward = loyalty?.rewards.find((r: Reward) => r.id === selectedRewardId) ?? null;
+  const freeShipping = (subtotal >= 150) || (selectedReward?.type === 'FREE_SHIPPING');
+  const shippingCost = freeShipping ? 0 : 9.95;
+  const pointsDiscount = selectedReward?.type === 'FIXED_DISCOUNT' ? (selectedReward.discountAmount ?? 0) : 0;
+  const total = Math.max(0, subtotal + shippingCost - pointsDiscount);
 
   if (step === 'success') {
     return (
@@ -117,10 +134,24 @@ export const Checkout = () => {
           <CheckCircle size={64} className="text-emerald-400 mx-auto mb-6" />
         </motion.div>
         <h1 className="font-display font-bold text-white text-3xl mb-3">Order Confirmed!</h1>
-        <p className="text-dark-400 mb-8">Thank you for shopping with Heart of the Cards. Your order has been placed and will be dispatched soon.</p>
+        <p className="text-dark-400 mb-4">Thank you for shopping with Heart of the Cards. Your order has been placed and will be dispatched soon.</p>
+        {pointsEarnedPreview > 0 && (
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.4 }}
+            className="inline-flex items-center gap-2 bg-gold-500/10 border border-gold-500/20 text-gold-400 text-sm font-medium px-4 py-2 rounded-full mb-6"
+          >
+            <Star size={14} className="fill-gold-400" />
+            +{pointsEarnedPreview} points earned on this order!
+          </motion.div>
+        )}
         <div className="flex flex-col gap-3">
           <button onClick={() => navigate('/orders')} className="btn-primary w-full">View My Orders</button>
-          <button onClick={() => navigate('/products')} className="btn-secondary w-full">Continue Shopping</button>
+          <button onClick={() => navigate('/rewards')} className="btn-secondary w-full flex items-center justify-center gap-2">
+            <Star size={16} /> View My Rewards
+          </button>
+          <button onClick={() => navigate('/products')} className="text-dark-400 hover:text-dark-300 text-sm transition-colors">Continue Shopping</button>
         </div>
       </div>
     );
@@ -247,7 +278,67 @@ export const Checkout = () => {
                   </form>
                 )}
 
-                {!showNewAddress && selectedAddressId && (
+                {!showNewAddress && selectedAddressId && loyalty && (
+                  <div className="mt-4 space-y-3">
+                    {/* Loyalty Rewards */}
+                    {loyalty.points > 0 && (
+                      <div className="border border-dark-700 rounded-xl p-4">
+                        <div className="flex items-center gap-2 mb-3">
+                          <Star size={16} className="text-gold-400" />
+                          <span className="text-white text-sm font-medium">Use Rewards Points</span>
+                          <span className="text-dark-400 text-xs ml-auto">{loyalty.points.toLocaleString()} pts available</span>
+                        </div>
+                        {loyalty.availableRewards.length === 0 ? (
+                          <p className="text-dark-400 text-xs">Keep shopping to unlock rewards! Next reward at {
+                            loyalty.rewards.sort((a: Reward, b: Reward) => a.pointsCost - b.pointsCost)[0]?.pointsCost
+                          } pts.</p>
+                        ) : (
+                          <div className="space-y-2">
+                            {loyalty.availableRewards.map((reward: Reward) => (
+                              <label
+                                key={reward.id}
+                                className={`flex items-center gap-3 p-2.5 rounded-lg border cursor-pointer transition-all ${
+                                  selectedRewardId === reward.id
+                                    ? 'border-gold-500 bg-gold-500/5'
+                                    : 'border-dark-700 hover:border-dark-500'
+                                }`}
+                              >
+                                <input
+                                  type="radio"
+                                  name="reward"
+                                  value={reward.id}
+                                  checked={selectedRewardId === reward.id}
+                                  onChange={() => setSelectedRewardId(reward.id)}
+                                  className="accent-gold-500"
+                                />
+                                <div className="flex-1">
+                                  <p className="text-white text-sm font-medium">{reward.name}</p>
+                                  <p className="text-dark-400 text-xs">{reward.description}</p>
+                                </div>
+                                <span className="text-gold-400 text-xs font-medium">{reward.pointsCost} pts</span>
+                              </label>
+                            ))}
+                            {selectedRewardId && (
+                              <button
+                                type="button"
+                                onClick={() => setSelectedRewardId(null)}
+                                className="flex items-center gap-1 text-dark-400 hover:text-dark-300 text-xs transition-colors"
+                              >
+                                <X size={12} /> Remove reward
+                              </button>
+                            )}
+                          </div>
+                        )}
+                      </div>
+                    )}
+
+                    <button onClick={handleProceedToPayment} className="btn-primary w-full">
+                      Continue to Payment
+                    </button>
+                  </div>
+                )}
+
+                {!showNewAddress && selectedAddressId && !loyalty && (
                   <button onClick={handleProceedToPayment} className="btn-primary w-full mt-4">
                     Continue to Payment
                   </button>
@@ -295,7 +386,7 @@ export const Checkout = () => {
           <div className="border-t border-dark-700 pt-3 space-y-1.5 text-sm">
             <div className="flex justify-between">
               <span className="text-dark-400">Subtotal</span>
-              <span className="text-white">A${Number(displayCart?.subtotal || 0).toFixed(2)}</span>
+              <span className="text-white">A${subtotal.toFixed(2)}</span>
             </div>
             <div className="flex justify-between">
               <span className="text-dark-400">Shipping</span>
@@ -303,10 +394,24 @@ export const Checkout = () => {
                 {shippingCost === 0 ? 'FREE' : `A$${shippingCost.toFixed(2)}`}
               </span>
             </div>
+            {selectedReward && pointsDiscount > 0 && (
+              <div className="flex justify-between text-gold-400">
+                <span className="flex items-center gap-1"><Gift size={12} /> {selectedReward.name}</span>
+                <span>-A${pointsDiscount.toFixed(2)}</span>
+              </div>
+            )}
             <div className="flex justify-between font-semibold text-base pt-1 border-t border-dark-700">
               <span className="text-white">Total</span>
               <span className="text-gold-400">A${total.toFixed(2)}</span>
             </div>
+          </div>
+
+          {/* Points preview */}
+          <div className="flex items-center gap-1.5 bg-gold-500/5 border border-gold-500/10 rounded-lg px-3 py-2">
+            <Star size={12} className="text-gold-400" />
+            <span className="text-gold-400 text-xs">
+              Earn ~{Math.floor(subtotal)} points on this order
+            </span>
           </div>
         </div>
       </div>

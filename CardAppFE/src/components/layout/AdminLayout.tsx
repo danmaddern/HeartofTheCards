@@ -1,5 +1,5 @@
 import { Link, Outlet, useLocation, Navigate } from 'react-router-dom';
-import { LayoutDashboard, Package, ShoppingBag, BarChart3, ChevronRight, Warehouse } from 'lucide-react';
+import { LayoutDashboard, Package, ShoppingBag, BarChart3, ChevronRight, Warehouse, Star } from 'lucide-react';
 import { useAuthStore } from '../../store/authStore';
 
 const adminNav = [
@@ -8,6 +8,7 @@ const adminNav = [
   { to: '/admin/orders', label: 'Orders', icon: ShoppingBag },
   { to: '/admin/inventory', label: 'Inventory', icon: Warehouse },
   { to: '/admin/analytics', label: 'Analytics', icon: BarChart3 },
+  { to: '/admin/loyalty', label: 'Loyalty', icon: Star },
 ];
 
 export const AdminLayout = () => {

@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Package, ChevronDown, ChevronRight, CheckCircle, Circle, Clock, Truck, Star, XCircle } from 'lucide-react';
+import { Package, ChevronDown, ChevronRight, CheckCircle, Clock, Truck, Star, XCircle, Gift } from 'lucide-react';
 import { ordersService } from '../services/orders.service';
 import { Order } from '../types';
 import { LoadingSkeleton } from '../components/ui/LoadingSkeleton';
@@ -191,11 +191,35 @@ export const Orders = () => {
                           {Number(order.shippingCost) === 0 ? 'FREE' : `A$${Number(order.shippingCost).toFixed(2)}`}
                         </span>
                       </div>
+                      {(order as any).pointsDiscount > 0 && (
+                        <div className="flex justify-between text-gold-400">
+                          <span className="flex items-center gap-1"><Gift size={12} /> Rewards discount</span>
+                          <span>-A${Number((order as any).pointsDiscount).toFixed(2)}</span>
+                        </div>
+                      )}
                       <div className="flex justify-between font-semibold text-base pt-1">
                         <span className="text-white">Total</span>
                         <span className="text-gold-400">A${Number(order.total).toFixed(2)}</span>
                       </div>
                     </div>
+
+                    {/* Loyalty points */}
+                    {((order as any).pointsEarned > 0 || (order as any).pointsUsed > 0) && (
+                      <div className="bg-gold-500/5 border border-gold-500/10 rounded-xl p-3 space-y-1 text-xs">
+                        {(order as any).pointsEarned > 0 && (
+                          <div className="flex items-center gap-1.5 text-gold-400">
+                            <Star size={12} className="fill-gold-400" />
+                            +{(order as any).pointsEarned} points earned
+                          </div>
+                        )}
+                        {(order as any).pointsUsed > 0 && (
+                          <div className="flex items-center gap-1.5 text-dark-300">
+                            <Gift size={12} />
+                            {(order as any).pointsUsed} points redeemed
+                          </div>
+                        )}
+                      </div>
+                    )}
 
                     {/* Address */}
                     {order.deliveryAddress && (

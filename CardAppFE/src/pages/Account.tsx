@@ -3,9 +3,11 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useForm } from 'react-hook-form';
 import { motion } from 'framer-motion';
 import toast from 'react-hot-toast';
-import { User, MapPin, Plus, Trash2, Check, Edit } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { User, MapPin, Plus, Trash2, Check, Star, Gift, ArrowRight } from 'lucide-react';
 import { useAuthStore } from '../store/authStore';
 import { addressesService } from '../services/addresses.service';
+import { loyaltyService } from '../services/loyalty.service';
 import { Address } from '../types';
 import { apiClient } from '../api/client';
 import { handleApiError } from '../lib/api';
@@ -21,6 +23,11 @@ export const Account = () => {
   const { data: addresses, isLoading: addrLoading } = useQuery({
     queryKey: ['addresses'],
     queryFn: addressesService.getAll,
+  });
+
+  const { data: loyalty } = useQuery({
+    queryKey: ['loyalty-balance'],
+    queryFn: loyaltyService.getBalance,
   });
 
   const { register: regProfile, handleSubmit: handleProfile, formState: { isSubmitting: savingProfile } } = useForm({
@@ -73,6 +80,41 @@ export const Account = () => {
   return (
     <div className="max-w-4xl mx-auto px-4 sm:px-6 py-8">
       <h1 className="section-title mb-8">My Account</h1>
+
+      {/* Loyalty Points Summary */}
+      {loyalty && (
+        <motion.div
+          initial={{ opacity: 0, y: 8 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="relative overflow-hidden rounded-2xl bg-dark-950 p-5 mb-6 border border-gold-500/20"
+        >
+          <div className="absolute top-0 right-0 w-32 h-32 bg-gold-500/5 rounded-full blur-2xl -translate-y-1/2 translate-x-1/2" />
+          <div className="relative flex items-center justify-between">
+            <div className="flex items-center gap-4">
+              <div className="w-12 h-12 rounded-xl bg-gold-500/10 border border-gold-500/20 flex items-center justify-center">
+                <Star size={22} className="text-gold-400" />
+              </div>
+              <div>
+                <p className="text-dark-300 text-xs font-medium uppercase tracking-wider">Loyalty Points</p>
+                <div className="flex items-end gap-2">
+                  <span className="text-3xl font-display font-bold text-white">{loyalty.points.toLocaleString()}</span>
+                  <span className="text-gold-400 text-sm mb-0.5">pts</span>
+                </div>
+                {loyalty.availableRewards.length > 0 ? (
+                  <p className="text-emerald-400 text-xs mt-0.5 flex items-center gap-1">
+                    <Gift size={11} /> {loyalty.availableRewards.length} reward{loyalty.availableRewards.length !== 1 ? 's' : ''} available
+                  </p>
+                ) : (
+                  <p className="text-dark-400 text-xs mt-0.5">{loyalty.totalEarned.toLocaleString()} pts earned lifetime</p>
+                )}
+              </div>
+            </div>
+            <Link to="/rewards" className="flex items-center gap-1.5 text-gold-400 hover:text-gold-300 text-sm font-medium transition-colors">
+              View Rewards <ArrowRight size={14} />
+            </Link>
+          </div>
+        </motion.div>
+      )}
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Profile */}

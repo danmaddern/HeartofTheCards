@@ -23,6 +23,8 @@ import { AdminProducts } from './pages/admin/AdminProducts';
 import { AdminOrders } from './pages/admin/AdminOrders';
 import { AdminInventory } from './pages/admin/AdminInventory';
 import { AdminAnalytics } from './pages/admin/AdminAnalytics';
+import { AdminLoyalty } from './pages/admin/AdminLoyalty';
+import { Rewards } from './pages/Rewards';
 
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   const { isAuthenticated } = useAuthStore();
@@ -48,6 +50,7 @@ export default function App() {
             <Route path="checkout" element={<ProtectedRoute><Checkout /></ProtectedRoute>} />
             <Route path="account" element={<ProtectedRoute><Account /></ProtectedRoute>} />
             <Route path="orders" element={<ProtectedRoute><Orders /></ProtectedRoute>} />
+            <Route path="rewards" element={<ProtectedRoute><Rewards /></ProtectedRoute>} />
 
             <Route path="admin" element={<AdminLayout />}>
               <Route index element={<AdminDashboard />} />
@@ -55,6 +58,7 @@ export default function App() {
               <Route path="orders" element={<AdminOrders />} />
               <Route path="inventory" element={<AdminInventory />} />
               <Route path="analytics" element={<AdminAnalytics />} />
+              <Route path="loyalty" element={<AdminLoyalty />} />
             </Route>
           </Route>
         </Routes>

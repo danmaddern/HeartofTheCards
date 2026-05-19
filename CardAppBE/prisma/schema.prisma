@@ -46,22 +46,31 @@ enum PaymentProvider {
   STRIPE
 }
 
-model User {
-  id           String    @id @default(cuid())
-  email        String    @unique
-  passwordHash String?
-  firstName    String
-  lastName     String
-  phone        String?
-  role         Role      @default(CUSTOMER)
-  googleId     String?   @unique
-  createdAt    DateTime  @default(now())
-  updatedAt    DateTime  @updatedAt
+enum LoyaltyTransactionType {
+  EARN
+  REDEEM
+  ADMIN_ADJUSTMENT
+}
 
-  orders             Order[]
-  addresses          Address[]
-  cart               Cart?
+model User {
+  id                String   @id @default(cuid())
+  email             String   @unique
+  passwordHash      String?
+  firstName         String
+  lastName          String
+  phone             String?
+  role              Role     @default(CUSTOMER)
+  googleId          String?  @unique
+  loyaltyPoints     Int      @default(0)
+  totalPointsEarned Int      @default(0)
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  orders              Order[]
+  addresses           Address[]
+  cart                Cart?
   passwordResetTokens PasswordResetToken[]
+  loyaltyTransactions LoyaltyTransaction[]
 
   @@map("users")
 }
@@ -163,21 +172,42 @@ model Order {
   paymentStatus     PaymentStatus @default(UNPAID)
   subtotal          Decimal       @db.Decimal(10, 2)
   shippingCost      Decimal       @db.Decimal(10, 2) @default(0)
+  pointsDiscount    Decimal       @db.Decimal(10, 2) @default(0)
   total             Decimal       @db.Decimal(10, 2)
+  pointsUsed        Int           @default(0)
+  pointsEarned      Int           @default(0)
   deliveryAddressId String
   paypalOrderId     String?
   createdAt         DateTime      @default(now())
   updatedAt         DateTime      @updatedAt
 
-  user            User          @relation(fields: [userId], references: [id])
-  deliveryAddress Address       @relation(fields: [deliveryAddressId], references: [id])
-  items           OrderItem[]
-  transactions    Transaction[]
+  user                User               @relation(fields: [userId], references: [id])
+  deliveryAddress     Address            @relation(fields: [deliveryAddressId], references: [id])
+  items               OrderItem[]
+  transactions        Transaction[]
+  loyaltyTransactions LoyaltyTransaction[]
 
   @@index([userId])
   @@index([status])
   @@index([paymentStatus])
   @@map("orders")
+}
+
+model LoyaltyTransaction {
+  id          String                 @id @default(cuid())
+  userId      String
+  orderId     String?
+  type        LoyaltyTransactionType
+  points      Int
+  balance     Int
+  description String
+  createdAt   DateTime               @default(now())
+
+  user  User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  order Order? @relation(fields: [orderId], references: [id])
+
+  @@index([userId])
+  @@map("loyalty_transactions")
 }
 
 model OrderItem {

@@ -7,4 +7,8 @@ export class CreateOrderDto {
   @IsOptional()
   @IsString()
   sessionId?: string;
+
+  @IsOptional()
+  @IsString()
+  rewardId?: string;
 }

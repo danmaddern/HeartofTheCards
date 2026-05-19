@@ -19,6 +19,7 @@ import { AddressesModule } from './modules/addresses/addresses.module';
 import { AdminModule } from './modules/admin/admin.module';
 import { HealthModule } from './modules/health/health.module';
 import { EmailModule } from './modules/email/email.module';
+import { LoyaltyModule } from './modules/loyalty/loyalty.module';
 
 @Module({
   imports: [
@@ -55,6 +56,7 @@ import { EmailModule } from './modules/email/email.module';
     AdminModule,
     HealthModule,
     EmailModule,
+    LoyaltyModule,
   ],
   providers: [
     {

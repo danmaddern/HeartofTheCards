@@ -6,6 +6,7 @@ import {
 } from '@nestjs/common';
 import { PrismaService } from '../../prisma/prisma.service';
 import { EmailService } from '../email/email.service';
+import { LoyaltyService } from '../loyalty/loyalty.service';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { OrderStatus, PaymentStatus } from '@prisma/client';
 
@@ -14,6 +15,7 @@ export class OrdersService {
   constructor(
     private prisma: PrismaService,
     private emailService: EmailService,
+    private loyaltyService: LoyaltyService,
   ) {}
 
   private generateOrderNumber(): string {
@@ -49,8 +51,22 @@ export class OrdersService {
       (sum, item) => sum + Number(item.unitPrice) * item.quantity,
       0,
     );
-    const shippingCost = subtotal >= 150 ? 0 : 9.95;
-    const total = subtotal + shippingCost;
+
+    let pointsDiscount = 0;
+    let pointsUsed = 0;
+    let shippingCost = subtotal >= 150 ? 0 : 9.95;
+
+    if (dto.rewardId) {
+      const reward = await this.loyaltyService.validateRewardForUser(userId, dto.rewardId);
+      pointsUsed = reward.pointsCost;
+      if (reward.type === 'FREE_SHIPPING') {
+        shippingCost = 0;
+      } else {
+        pointsDiscount = reward.discountAmount;
+      }
+    }
+
+    const total = Math.max(0, subtotal + shippingCost - pointsDiscount);
 
     const order = await this.prisma.order.create({
       data: {
@@ -59,6 +75,8 @@ export class OrdersService {
         deliveryAddressId: dto.deliveryAddressId,
         subtotal,
         shippingCost,
+        pointsDiscount,
+        pointsUsed,
         total,
         items: {
           create: cart.items.map((item) => ({
@@ -154,6 +172,8 @@ export class OrdersService {
     });
     if (!order) throw new NotFoundException('Order not found');
 
+    const pointsEarned = this.loyaltyService.calculatePointsEarned(Number(order.subtotal));
+
     await this.prisma.$transaction(async (tx) => {
       await tx.order.update({
         where: { id: orderId },
@@ -161,6 +181,7 @@ export class OrdersService {
           status: OrderStatus.PAID,
           paymentStatus: PaymentStatus.PAID,
           paypalOrderId,
+          pointsEarned,
         },
       });
 
@@ -175,6 +196,15 @@ export class OrdersService {
       if (cart) {
         await tx.cartItem.deleteMany({ where: { cartId: cart.id } });
       }
+
+      await this.loyaltyService.awardPoints(
+        tx,
+        order.userId,
+        orderId,
+        order.orderNumber,
+        Number(order.subtotal),
+        order.pointsUsed,
+      );
     });
 
     this.emailService.sendOrderConfirmation({
